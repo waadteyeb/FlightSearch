@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "https://sky-scrapper.p.rapidapi.com/api/v1/flights/";
 
-const API_KEY = "eb48ba146emsh3d7f4c6fb5aa0cdp13092djsn7d47b36db399";
+const API_KEY = "6d14d0d209mshc150fff04cf9787p1a0937jsna16e2c4b9cc9";
 
 
 type Params = {

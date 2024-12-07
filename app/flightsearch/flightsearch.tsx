@@ -48,6 +48,8 @@ const FlightSearchForm = () => {
   const [departureAirports, setDepartureAirports] = useState<any[]>([]);
   const [destinationAirports, setDestinationAirports] = useState<any[]>([]);
   const [loadingAirports, setLoadingAirports] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
 
   // Fetch airports for the given country
   const fetchAirports = async (
@@ -83,6 +85,7 @@ const FlightSearchForm = () => {
 
   // Handle search for flights by country and date
   const handleSearchFlights = async () => {
+    setLoading(true)
     setError("");
 
     // Check if both departure and destination airports are selected
@@ -134,10 +137,11 @@ const FlightSearchForm = () => {
       console.error("Error fetching flights:", error);
       setError("Failed to fetch flights.");
     }
+    setLoading(false)
   };
 
   return (
-    <div className="max-w-xl mx-auto p-4">
+    <div className="max-w-xl mx-auto p-4 relative bg-cover bg-center">
       <h1 className="text-xl font-semibold text-center mb-4">Flight Search</h1>
 
       {/* Departure Country Picker */}
@@ -261,40 +265,59 @@ const FlightSearchForm = () => {
 
       {/* Error Message */}
       {error && <p className="text-red-500">{error}</p>}
-      {flightData.map((itinerary) => (
-        <div key={itinerary.id} className="itinerary-card">
-          <h2>Itinerary: {itinerary.id}</h2>
-          <p>Price: {itinerary.price.formatted}</p>
-          {itinerary.legs.map((leg, index) => (
-            <div key={leg.id} className="leg">
-              <div className="leg-info">
-                <p>
-                  <strong>Flight {index + 1}:</strong> {leg.origin.name} (
-                  {leg.origin.city}) to {leg.destination.name} (
-                  {leg.destination.city})
+      {loading ? (
+  <div className="flex justify-center items-center">
+    <div className="animate-spin border-t-4 border-blue-500 border-solid w-16 h-16 rounded-full"></div>
+  </div>
+) : (
+  <>
+    {flightData.length > 0 ? (
+      <h1 className="text-xl font-semibold text-center mb-4">Available Flights</h1>
+    ) : (
+      <h1 className="text-xl font-semibold text-center mb-4">No Flights</h1>
+    )}
+
+    {flightData.map((itinerary) => (
+      <div
+        key={itinerary.id}
+        className="bg-white rounded-lg shadow-lg p-6 mb-6 max-w-4xl mx-auto"
+      >
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Itinerary: {itinerary.id}
+        </h2>
+        <p className="text-xl text-blue-600 font-semibold mb-4">
+          Price: <span className="text-gray-800">{itinerary.price.formatted}</span>
+        </p>
+        {itinerary.legs.map((leg, index) => (
+          <div key={leg.id} className="border-t-2 border-gray-300 pt-4">
+            <div className="flex justify-between mb-4">
+              <div className="flex-1">
+                <p className="text-lg font-semibold text-gray-700">
+                  <strong>Flight {index + 1}:</strong> {leg.origin.name} ({leg.origin.city}) to {leg.destination.name} ({leg.destination.city})
                 </p>
-                <p>
-                  <strong>Departure:</strong>{" "}
-                  {new Date(leg.departure).toLocaleString()}
+                <p className="text-sm text-gray-600">
+                  <strong>Departure:</strong> {new Date(leg.departure).toLocaleString()}
                 </p>
-                <p>
-                  <strong>Arrival:</strong>{" "}
-                  {new Date(leg.arrival).toLocaleString()}
+                <p className="text-sm text-gray-600">
+                  <strong>Arrival:</strong> {new Date(leg.arrival).toLocaleString()}
                 </p>
-                <p>
+              </div>
+              <div className="flex-1 text-right">
+                <p className="text-sm text-gray-600">
                   <strong>Duration:</strong> {leg.durationInMinutes} minutes
                 </p>
-                <p>
-                  <strong>Carriers:</strong>{" "}
-                  {leg.carriers.marketing
-                    .map((carrier) => carrier.name)
-                    .join(", ")}
+                <p className="text-sm text-gray-600">
+                  <strong>Carriers:</strong> {leg.carriers.marketing.map((carrier) => carrier.name).join(", ")}
                 </p>
               </div>
             </div>
-          ))}
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
+    ))}
+  </>
+)}
+
     </div>
   );
 };
