@@ -1,4 +1,8 @@
-# Welcome to React Router!
+# Welcome to Flight App!
+
+Check out the demo video:
+
+[Demo Video](public/flightappdemo.mp4)
 
 A modern, production-ready template for building full-stack React applications using React Router.
 
